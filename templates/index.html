@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>1.4亿通用知识图谱问答</title>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <style>
+        #main {
+            margin-left: 500px;
+            margin-top: 131px;
+        }
+
+        .row {
+            margin-top: 150px;
+        }
+
+        .input-group {
+            position: relative;
+            display: table;
+            border-collapse: separate;
+            width: 730px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3" id="search-input">
+                <form action="http://localhost:5000/search" method="post" onsubmit="return check()">
+                    <div class="input-group">
+                        <!-- <label for="question">问题</label> -->
+                        <input type="text" id="inputtext" class="form-control input-lg col-xs-15" name="question"
+                            placeholder="请输入要查询的问题">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-primary input-lg">Submit</button>
+                        </div>
+                    </div>
+                    <div id="examples" style="width: 722px;">
+                        <span id='example_title'>
+                            <div style="display: inline-block; color: red;">热门问题:</div>
+                        </span>
+                        <span id='example'><a
+                                href='http://localhost:5000/ownthinkQA/华东理工大学的校长是谁？'>华东理工大学的校长是谁？</a></span>
+                        <span id='example'><a href='http://localhost:5000/ownthinkQA/姚明的女儿?'>姚明的女儿叫啥？</a></span>
+                        <span id='example'><a
+                                href='http://localhost:5000/ownthinkQA/马云和马化腾的关系是啥？'>马云和马化腾的关系是啥？</a></span>
+                        <span id='example'><a href='http://localhost:5000/ownthinkQA/姚明的女儿出生地是哪？'>姚明的女儿出生地是哪？</a></span>
+                        <span id='example'><a href='http://localhost:5000/ownthinkQA/感冒了如何治疗'>感冒了如何治疗</a></span>
+                        <span id='example'><a href='http://localhost:5000/ownthinkQA/上海有哪些好玩的地方'>上海有哪些好玩的地方</a></span>
+                        <span id='example'><a href='http://localhost:5000/ownthinkQA/华东理工大学的位置'>华东理工大学的位置</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
+</html>

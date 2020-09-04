@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>1.4亿通用知识图谱问答</title>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <style>
+        #main {
+            margin-left: 1px;
+            margin-top: 4px;
+            margin-bottom: 20px;
+            right: 30px;
+        }
+
+        .row {
+            margin-top: 75px;
+        }
+
+        .input-group {
+            width: 730px;
+        }
+
+        .well1 {
+            margin-left: 42px;
+            margin-top: 70px;
+            width: 720px;
+            height: 596px;
+        }
+
+        .table {
+            width: 900px;
+            height: 150px;
+            max-width: 95%;
+            margin-bottom: 20px;
+        }
+
+        .bigBox {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="container"> -->
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3" id="search-input">
+            <form action="http://localhost:5000/search" method="post" autocomplete="on" onsubmit="return check() ">
+                <div class="input-group">
+                    <!-- <label for="question">问题</label> -->
+                    <input type="text" id="inputtext" class="form-control input-lg col-xs-15" name="question"
+                        placeholder="请输入要查询的问题" value="">
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-primary input-lg">Submit</button>
+                    </div>
+                </div>
+                <div id="examples" style="width: 722px;"><br>
+                    <span id='example_title'>
+                        <div style="display: inline-block; color: red;">热门问题:</div>
+                    </span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/华东理工大学的校长是谁？'>华东理工大学的校长是谁？</a></span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/姚明的女儿?'>姚明的女儿叫啥？</a></span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/马云和马化腾的关系是啥？'>马云和马化腾的关系是啥？</a></span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/姚明的女儿出生地是哪？'>姚明的女儿出生地是哪？</a></span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/感冒了如何治疗'>感冒了如何治疗</a></span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/上海有哪些好玩的地方'>上海有哪些好玩的地方</a></span>
+                    <span id='example'><a href='http://localhost:5000/ownthinkQA/华东理工大学的位置'>华东理工大学的位置</a></span>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <div class="bigBox">
+        <!-- <div class="am-content"> -->
+        <div class="well1">
+            <table class="table table-bordered table-hover" style="font-size: 24px;">
+                {% for k,v in ans.items() %}
+                <tr>
+                    <td>{{ k }}</td>
+                    <td>{{ v }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <!-- {% for k,v in ans.items() %}
+
+            <span id='answer'>{{k}}</span><br>
+            <span id='answer'>{{v}}</span><br>
+            {% endfor %} -->
+            <!-- </div> -->
+        </div>
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="main" style="width: 1600px;height:750px;"></div>
+
+    </div>
+
+    <script type="text/javascript">
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var categories = [{
+            name: '主体'
+        }, {
+            name: '属性'
+        }, {
+            name: '答案'
+        }];
+        var data = []
+        var legends = ["主体", "属性", "答案"]
+        data = eval('{{data_list|safe}}')
+        console.log(data)
+
+
+        var links = []
+        links = eval('{{link_list|safe}}')
+        console.log(links)
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '',
+                // text:'',
+                top: 'top',
+                left: "center",
+                textStyle: {
+                    color: '#333'
+                },
+            },
+            // 提示框的配置
+            tooltip: {
+                formatter: function (x) {
+                    return x.data.name;
+                }
+            },
+            backgroundColor: '#fff',
+            // 工具箱
+            toolbox: {
+                // 显示工具箱
+                show: true,
+                feature: {
+                    mark: {
+                        show: true
+                    },
+                    // 还原
+                    restore: {
+                        show: true
+                    },
+                    // 保存为图片
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: legends,
+                textStyle: {
+                    color: '#333',
+                    fontSize: 18,
+                },
+                icon: 'circle',
+                type: 'scroll',
+                orient: 'vertical',
+                right: 10,
+                top: 30,
+                bottom: 20,
+                itemWidth: 15,
+                itemHeight: 15
+            },
+            animationDuration: 1000,
+            animationEasingUpdate: 'quinticInOut',
+            series: [
+                {
+                    name: '知识图谱',
+                    type: 'graph',
+                    layout: 'force',
+                    symbolSize: 50,
+                    circular: {
+                        rotateLabel: true
+                    },
+                    roam: true,
+                    // label: {
+                    //     show: true
+                    // },
+                    force: {
+                        initLayout: 'corcular',
+                        repulsion: 300,
+                        gravity: 0,
+                        edgeLength: 240,
+                        layoutAnimation: true
+                        // friction: 0.5
+                    },
+                    edgeSymbol: ['circle', 'arrow'],
+                    edgeSymbolSize: [2, 10],
+                    nodeScaleRatio: 0.6,
+                    focusNodeAdjaceny: true,
+                    draggable: true,
+                    lineStyle: {
+                        normal: {
+                            show: true,
+                            width: 1,
+                            opacity: 0.9,
+                            curveness: 0,
+                            color: '#759aa0',
+                        }
+                    },
+                    edgeLabel: {
+                        normal: {
+                            show: true,
+                            position: 'middle',
+                            textStyle: {
+                                fontSize: 12
+                            },
+                            // textStyle:{}
+                            formatter: function (x) {
+                                return x.data.name;
+                            }
+                        }
+                    },
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside',
+                            fontSize: 10,
+                            // rotate: 0,
+                            // formatter: '{b}',
+                            formatter: function (v) {
+                                var text = v.name;
+                                return text.length > 4 ? text.substr(0, 4) + "..." : text;
+                            },
+
+                            fontSize: 15
+                            // textStyle: '600'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            // fontSize: 55
+                        }
+                    },
+                    data: data,
+                    links: links,
+                    categories: categories,
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        // myChart = echarts.init(document.getElementById('graph'))
+        myChart.setOption(option);
+
+    </script>
+
+</body>
+
+
+
+</html>
